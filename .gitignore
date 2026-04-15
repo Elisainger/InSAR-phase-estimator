@@ -1,0 +1,6 @@
+simtdset/
+InSAR-Simulator/
+train/
+__pycache__/
+*.pyc
+*.npy
