@@ -31,16 +31,16 @@ InSAR data provide valuable information about surface deformation, but are often
 
 ## 1. Create and activate environment
 
-
+```
 conda create -n name_of_env python=3.10
 conda activate name_of_env
-
+```
 
 ## 2. Install dependencies
 
-
-pip install numpy matplotlib tensorflow keras h5py scikit-image scikit-learn
-
+```
+conda install numpy matplotlib tensorflow keras h5py scikit-image scikit-learn
+```
 
 ---
 
@@ -49,29 +49,29 @@ pip install numpy matplotlib tensorflow keras h5py scikit-image scikit-learn
 
 In the project folder:
 
-
+```
 InSAR-simulator/
-
+```
 
 Generate data:
 
-
+```
 python buildset_noisy.py
-
+```
 
 This creates:
 
-
+```
 simtdset/
 ├── noisy/
 ├── clean/
-
+```
 
 Each file is paired:
 
-
+```
 noisy/10.npy ↔ clean/10.npy
-
+```
 
 ---
 
@@ -79,9 +79,9 @@ noisy/10.npy ↔ clean/10.npy
 
 ## Unsupervised Training
 
-
+```
 python train_coh_unsupervised.py
-
+```
 
 - Input: noisy interferograms  
 - Target: noisy interferograms  
@@ -91,9 +91,9 @@ python train_coh_unsupervised.py
 
 ## Supervised Training
 
-
+```
 python train_coh_supervised.py
-
+```
 
 - Input: noisy interferograms  
 - Target: clean interferograms  
@@ -105,25 +105,25 @@ python train_coh_supervised.py
 
 Models are saved in:
 
-
+```
 train/ifg_ae/
-
+```
 
 Example:
 
-
+```
 weights.01.keras
 weights.02.keras
 ...
-
+```
 
 ---
 
 # Step 3: Compare Results
 
-
+```
 python compare.py
-
+```
 
 This script:
 
