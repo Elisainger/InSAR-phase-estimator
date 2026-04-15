@@ -11,9 +11,9 @@ InSAR data provide valuable information about surface deformation, but are often
 
 # Project Structure
 
-.
-├── train_coh_unsupervised.py # Unsupervised training (noisy → noisy)
-├── train_coh_supervised.py # Supervised training (noisy → clean)
+```
+├── train_coh_unsupervised.py # Unsupervised training (noisy → noisy) 
+├── train_coh_supervised.py # Supervised training (noisy → clean) 
 ├── compare.py # Compare input, reconstruction, ground truth
 ├── buildset_noisy.py # Simulation script
 ├── InSAR-simulator/ # External simulator repo
@@ -24,7 +24,7 @@ InSAR data provide valuable information about surface deformation, but are often
 │ ├── ifg_ae/ # Saved model weights
 │ ├── ifg_patches.hdf5 # Training dataset
 
-
+```
 ---
 
 # Setup Instructions
