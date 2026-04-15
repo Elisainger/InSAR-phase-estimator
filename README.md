@@ -5,7 +5,7 @@ This project investigates **Convolutional Neural Network (CNN)** approaches for 
 - **Unsupervised autoencoder training**
 - **Supervised training using simulated ground truth**
 
-InSAR data provide valuable information about surface deformation, but are often corrupted by noise. This project explores how deep learning can be used to improve phase reconstruction quality.
+InSAR data provide valuable information about surface deformation, but are often corrupted by noise. This project explores how deep learning can be used to improve phase reconstruction quality. The code in this repository is largely based on code made by Mukherjee et al. (2018).
 
 ---
 
