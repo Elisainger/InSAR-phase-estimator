@@ -63,20 +63,32 @@ def resize_pred(pred,out_height,out_width):
 
 def generate_ifg_dataset(source_files, hdf5_file, pat_per_ifg):
     examples_cnt = len(source_files)
-    
+
     rand_idx = np.random.permutation(examples_cnt)
     for loop_idx in range(examples_cnt):
-        path_in_str = source_files[rand_idx[loop_idx]]
-        
-        train_image = np.load(path_in_str)
-        train_image = np.angle(train_image)
-        train_image = np.cos(train_image) + 1j*np.sin(train_image)
-        
-        Z_ab = process_ifg(train_image)
-        train_pat = extract_patches_2d(Z_ab, (60,60), max_patches=pat_per_ifg, random_state=0)
-        
+        noisy_path = source_files[rand_idx[loop_idx]]
+        clean_path = noisy_path.replace(
+            os.sep + "noisy" + os.sep,
+            os.sep + "clean" + os.sep
+        )
+
+        noisy_image = np.load(noisy_path)
+        clean_image = np.load(clean_path)
+
+        noisy_phase = np.angle(noisy_image)
+        clean_phase = np.angle(clean_image)
+
+        noisy_ifg = np.cos(noisy_phase) + 1j * np.sin(noisy_phase)
+        clean_ifg = np.cos(clean_phase) + 1j * np.sin(clean_phase)
+
+        Z_noisy = process_ifg(noisy_ifg)
+        Z_clean = process_ifg(clean_ifg)
+
+        train_pat = extract_patches_2d(Z_noisy, (60, 60), max_patches=pat_per_ifg, random_state=0)
+        label_pat = extract_patches_2d(Z_clean, (60, 60), max_patches=pat_per_ifg, random_state=0)
+
         hdf5_file["train_img"][loop_idx*pat_per_ifg : (loop_idx+1)*pat_per_ifg, ...] = train_pat
-        hdf5_file["train_lab"][loop_idx*pat_per_ifg : (loop_idx+1)*pat_per_ifg, ...] = train_pat
+        hdf5_file["train_lab"][loop_idx*pat_per_ifg : (loop_idx+1)*pat_per_ifg, ...] = label_pat
 
 
 def generate_data(hdf5_file, batch_size, examples_cnt):
@@ -115,15 +127,15 @@ def main():
 
     repo_dir = os.path.dirname(__file__)
 
-    unsupervised_dir = os.path.join(repo_dir, 'train', 'unsupervised')
-    os.makedirs(unsupervised_dir, exist_ok=True)
+    supervised_dir = os.path.join(repo_dir, 'train', 'supervised')
+    os.makedirs(supervised_dir, exist_ok=True)
 
-    ifg_hdf5_path = os.path.join(unsupervised_dir, 'ifg_patches.hdf5')
+    ifg_hdf5_path = os.path.join(supervised_dir, 'ifg_patches.hdf5')
 
     train_path = os.path.join(repo_dir, 'simtdset', 'noisy')
     train_filelist = glob.glob(os.path.join(train_path, '*.npy'))
 
-    ifg_ae_dir = os.path.join(unsupervised_dir, 'ifg_ae')
+    ifg_ae_dir = os.path.join(supervised_dir, 'ifg_ae')
     os.makedirs(ifg_ae_dir, exist_ok=True)
 
     ifg_ae_weight_path = os.path.join(ifg_ae_dir, 'weights.{epoch:02d}.keras')
@@ -156,30 +168,6 @@ def main():
         y = hdf5_file["train_lab"][:]
 
         ifg_ae.fit(x, y, batch_size=batch_size, epochs=epochs, callbacks=[ifg_ae_cpk])
-
-    create_coh = False
-
-    patch_height = 64
-    patch_width = 64
-
-    if create_coh:
-       hdf5_file = h5py.File(coh_hdf5_path, mode='w')
-       dataset_length = len(train_filelist)
-       train_shape = (dataset_length*pat_per_ifg, patch_height, patch_width, 2)
-       label_shape = (dataset_length*pat_per_ifg, patch_height, patch_width, 1)
-       hdf5_file.create_dataset("train_img", train_shape, np.float32)
-       hdf5_file.create_dataset("train_lab", label_shape, np.float32)
-       
-       generate_coh_dataset(train_filelist, hdf5_file, pat_per_ifg, ifg_ae)    
-       hdf5_file.close()
-
-    # hdf5_file = h5py.File(coh_hdf5_path, mode='r')
-    # train_num, patch_height, patch_width, num_recons = hdf5_file["train_img"].shape
-
-    # coh_nw_cpk = ModelCheckpoint(coh_nw_weight_path, save_freq='epoch')
-    # coh_nw = create_coh_nw()
-    # coh_nw.fit(generate_data(hdf5_file,batch_size,train_num), steps_per_epoch=train_num//batch_size, epochs=epochs, initial_epoch=0, callbacks=[coh_nw_cpk])
-    # hdf5_file.close()
 
 
 if __name__ == "__main__":
