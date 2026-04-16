@@ -21,8 +21,12 @@ InSAR data provide valuable information about surface deformation, but are often
 │ ├── noisy/ # Simulated noisy interferograms
 │ ├── clean/ # Simulated clean interferograms
 ├── train/
-│ ├── ifg_ae/ # Saved model weights
-│ ├── ifg_patches.hdf5 # Training dataset
+| ├──unsupervised
+│   ├── ifg_ae/ # Saved model weights
+│   ├── ifg_patches.hdf5 # Training dataset
+| ├──supervised
+│   ├── ifg_ae/ # Saved model weights
+│   ├── ifg_patches.hdf5 # Training dataset
 
 ```
 ---
