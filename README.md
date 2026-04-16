@@ -47,12 +47,6 @@ conda install numpy matplotlib tensorflow keras h5py scikit-image scikit-learn
 # Step 1: Generate Simulated Data
 
 
-In the project folder:
-
-```
-InSAR-simulator/
-```
-
 Generate data:
 
 ```
@@ -106,7 +100,8 @@ python train_coh_supervised.py
 Models are saved in:
 
 ```
-train/ifg_ae/
+train/unsupervised/ifg_ae/
+train/supervised/ifg_ae/
 ```
 
 Example:
